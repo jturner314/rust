@@ -1422,7 +1422,11 @@ impl<T> [T] {
             // mid >= 0: by definition
             // mid < size: mid = size / 2 + size / 4 + size / 8 ...
             let cmp = f(unsafe { s.get_unchecked(mid) });
-            base = if cmp == Greater { base } else { mid };
+            base = match cmp {
+                Greater => base,
+                Less => mid,
+                Equal => return Ok(mid),
+            };
             size -= half;
         }
         // base is always in [0, size) because base <= mid.
